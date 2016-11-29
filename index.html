@@ -3,24 +3,113 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <style>
+
+      .tweet {
+        font: 14px Arial;
+      }
+
+      .users {
+        display:block;
+      }
+    </style>
   </head>
   <body>
+
+    
+
     <script>
 
+      var numberOfTweets;
+      var $body = $('body');
+
+
+
       $(document).ready(function(){
-        var $body = $('body');
+        
         $body.html('');
 
-        var index = streams.home.length - 1;
+        for (var user in users) {
+          $user = $('<button class="users" onclick="displayUserTweets(\'' + users[user] + '\')">' + users[user] + '</button>');
+          $user.appendTo($body);
+        }
+
+        var $users = $('<div class="user"></div>');
+        $users.appendTo($body);
+
+        numberOfTweets = streams.home.length - 1;
+
+        var index = numberOfTweets;
+
         while(index >= 0){
           var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
+          var $tweetInfo = $('<div class="tweet info"></div>');
+          $tweetInfo.text(tweet.created_at + ' @' + tweet.user);
+          $tweetInfo.appendTo($body);
+          var $tweet = $('<div class="tweet"></div>');
+          $tweet.text('\t' + tweet.message);
           $tweet.appendTo($body);
           index -= 1;
         }
 
+        
+        
+
+
+        var $showMore = $('<button onclick="displayNewTweets()">Show More</button>');
+        $showMore.appendTo($body);
+
+        var $clearPage = $('<button onclick="clearPage()">Clear Page</button>');
+        $clearPage.appendTo($body);
+
       });
+
+      var clearPage = function() {
+        $body.html('');
+      }
+
+      var displayUserTweets = function(user) {
+        console.log(user);
+        var $users = $('<div class="user"></div>');
+
+        var numberOfUserTweets = streams.users[user].length - 1;
+
+        var index = numberOfUserTweets;
+
+        user = "" + user;
+        while(index >= 0){
+          console.log(user);   
+          console.log(streams.users);   
+          console.log(streams.users[user]);   
+          console.log(index);   
+
+          var tweet = streams.users[user][index];
+          console.log(tweet);
+          var $tweet = $('<div class="tweet"></div>');
+          $tweet.text('\t' + tweet.message);
+          $tweet.prependTo($body);
+          var $tweetInfo = $('<div class="tweet info"></div>');
+          $tweetInfo.text(tweet.created_at + ' @' + tweet.user);
+          $tweetInfo.prependTo($body);
+          
+          index -= 1;
+        }
+      }
+
+      var displayNewTweets = function() {
+        var numberOfNewTweets = streams.home.length - 1;
+        
+        while(numberOfNewTweets > numberOfTweets) {
+          var tweet = streams.home[numberOfTweets];
+          var $tweet = $('<div class="tweet"></div>');
+          $tweet.text(tweet.created_at + ' @' + tweet.user + ': ' + tweet.message);
+          $tweet.appendTo($body);
+          numberOfTweets++;
+        }
+      }
+
+      
+
 
     </script>
   </body>
